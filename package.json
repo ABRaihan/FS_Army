@@ -1,0 +1,15 @@
+{
+  "name": "@FS.army/core",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "lerna": "^7.1.1"
+  }
+}

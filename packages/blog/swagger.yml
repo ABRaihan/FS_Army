@@ -1,0 +1,176 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: FSArmy - My Blog API
+  description: This is the first professional api project we creating in full-stack army. This is a simple blog api application where anyone can create a new account, login to their system and create articles that will be visible publicly.
+  contact:
+    name: FS army.
+    url: https://fsarmy.com
+    email: support@fsarmy.com
+servers:
+  - description: "hello"
+    url: https://api.server.test/v1
+  - description: Dev
+    url: http://localhost:4000/api/v1
+tags:
+  - name: Auth
+    description: Authentication Endpoints (public)
+  - name: Article
+    description: Article Endpoints (public + private)
+  - name: Comment
+    description: Comment Endpoints (private)
+  - name: User
+    description: User Endpoints (admin only)
+components:
+  responses:
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 400
+              error:
+                type: string
+                example: bad request
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: email
+                    message:
+                      type: string
+                      example: invalid email
+  parameters:
+    pageParam:
+      in: query
+      name: page
+      description: current page number
+      schema:
+        type: integer
+        format: int32
+        example: 2
+    limitParam:
+      in: query
+      name: limit
+      description: maximum items to be returned
+      schema:
+        type: integer
+        format: int32
+        example: 10
+paths:
+  /auth/signup:
+    post:
+      description: create a new account
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: A. B. Raihan
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required: [name, email, password]
+      responses:
+        201:
+          description: Signup successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: signup successful
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /auth/signup
+                      signin:
+                        type: string
+                        example: /auth/signin
+        400:
+          $ref: "#/components/responses/400"
+  /auth/signin:
+    post:
+      description: Login to your account
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required: [email, password]
+      responses:
+        200:
+          description: Signin successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: signin successful
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /auth/signin
+        400:
+          $ref: "#/components/responses/400"
+  /articles:
+    get:
+      tags:
+        - Article
+      description: Retrive all published articles
+      parameters:
+        - $ref: "#/components/parameters/pageParam"
+        - $ref: "#/components/parameters/limitParam"
